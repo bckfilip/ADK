@@ -107,9 +107,6 @@ public class index{
         for (int l = 0; l < Math.min(3, word.length()); l++) {
             hashIndex += charValue(word.charAt(l)) * Math.pow(30, (2 - l));
         }
-        if(hashIndex == 901){
-            System.out.println(word);
-        }
         return hashIndex;
     }
 }
