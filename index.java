@@ -3,12 +3,13 @@ import java.util.*;
 import java.lang.*;
 
 public class index{
+    // /afs/nada.kth.se/info/adk19/labb1/tokenizer < /afs/nada.kth.se/info/adk19/labb1/korpus | sort > /var/tmp/tokenized.txt
 
     public static void main(String[] args) throws IOException{
         long startTime = System.currentTimeMillis();
         try{
             
-            File tokenized = new File("/var/tmp/tokenized_korpus.txt");
+            File tokenized = new File("/var/tmp/tokenized.txt");
             File indexFile = new File("/var/tmp/index.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(tokenized), "ISO-8859-1"));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "ISO-8859-1"));
@@ -25,9 +26,10 @@ public class index{
                 String currentWord = currentLine[0];
                 String[] newLineWords = nextLine.split(" ");
                 String nextWord = newLineWords[0];
-
-                positionNext += nextLine.getBytes("ISO-8859-1").length;
+             
+                positionNext += nextLine.getBytes("ISO-8859-1").length + 1;
                 occurences++;
+
 
                 if(!currentWord.equals(nextWord)){
                     writer.write(currentWord + "," + occurences + "," + positionFirst + "\n");
@@ -101,7 +103,7 @@ public class index{
         }
     }
 
-    public static Integer getHash(String word){
+    public static int getHash(String word){
        
         int hashIndex = 0;
         for (int l = 0; l < Math.min(3, word.length()); l++) {
