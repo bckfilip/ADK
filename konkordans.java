@@ -7,8 +7,9 @@ public class konkordans {
 
     public static void Main(String[] args){
         String word = args[0];
-        findHash(word);
-        if(!hash.equals(0)){
+        String[] bounds = findHash(word);
+        String wordFound = findWord(bounds);
+        if(wordFound != null && !wordFound.equals(0)){
 
         }else{
             System.out.println("Det angivna ordet förekommer ej i texten");
@@ -30,20 +31,29 @@ public class konkordans {
         while((currentLine = br.readLine()) == 0){
         }
         int secondPosition = currentLine; //Soughted pos2
-        String pos[];
-        pos[0] = firstPosition; //startpos i index
-        pos[1] = secondPosition; // slutpos i index
+        String pos[] = new String[]{firstPosition, secondPosition, word};
+        findIndex(pos);
         return pos;
     }
 
-    public static void findIndex(String[] pos){
+    /**
+     * Performs a binary search to find a word between two hashes
+     * @param pos
+     * @return the word found, null if nothing was found
+     */
+    public static String findWord(String[] pos){
         File indexFile = new File("/var/tmp/index.txt");
         RandomAccessFile index = new RandomAccessFile(indexFile, "r");
 
         long startPos = valueOf(pos[0]);
         long endPos = valueOf(pos[1]);
+        String word = pos[2];
         long mid = startPos + (endPos - startPos)/2;
-        if(index.seek(mid) == word){
+        index.seek(mid);
+        index.readLine();
+        String currentLine = index.readLine();
+        String currentWord = currentLine.split(",")[0];
+        if(currentWord == word){
             return mid;
         }
         if(index.seek(mid) > word){
@@ -52,6 +62,4 @@ public class konkordans {
         
         index.close();
     }
-
-    public static binSearch()
 }
