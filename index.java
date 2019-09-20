@@ -9,8 +9,8 @@ public class index{
         long startTime = System.currentTimeMillis();
         try{
 
-            File tokenized = new File("tokenized");
-            File indexFile = new File("index.txt");
+            File tokenized = new File("/var/tmp/tokenized.txt");
+            File indexFile = new File("/var/tmp/index.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(tokenized), "ISO-8859-1"));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "ISO-8859-1"));
 
@@ -63,8 +63,8 @@ public class index{
             hashList.add(0);
         }
 
-        File indexFile = new File("index.txt");
-        File hashFile = new File("hash.txt");
+        File indexFile = new File("/var/tmp/index.txt");
+        File hashFile = new File("/var/tmp/hash.txt");
         RandomAccessFile index = new RandomAccessFile(indexFile, "r");
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(hashFile), "ISO-8859-1"));
         int pos = 0;
