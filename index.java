@@ -19,7 +19,7 @@ public class index{
             String nextLine = reader.readLine();
             int occurences = 0;
             int positionFirst = 0;
-            int positionNext = firstLine.getBytes("ISO-8859-1").length +1;
+            int positionNext = firstLine.getBytes("ISO-8859-1").length +2;
 
 
             while(nextLine != null){
