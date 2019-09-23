@@ -9,6 +9,7 @@ public class konkordans {
      * @param args
      */
     public static void main(String[] args) throws IOException{
+        long startTime = System.currentTimeMillis();
         try{
         String word = args[0];
         String[] bounds = findHash(word);
@@ -22,6 +23,9 @@ public class konkordans {
         }catch(IOException e){
             e.printStackTrace();
         }
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println(elapsedTime);
     }
     /**
      * 
@@ -41,11 +45,10 @@ public class konkordans {
             br.readLine();
         }
         String firstPosition = br.readLine(); //Soughted pos1
-        String currentLine = br.readLine();
-        while( currentLine != null && currentLine.equals("0")){
-            currentLine = br.readLine();
+        String secondPosition = br.readLine();
+        while( secondPosition != null && secondPosition.equals("0")){
+            secondPosition = br.readLine();
         }
-        String secondPosition = currentLine; //Soughted pos2
 
         String pos[] = new String[]{firstPosition, secondPosition, word};
         br.close();
@@ -62,26 +65,28 @@ public class konkordans {
         File indexFile = new File("/var/tmp/index.txt");
         RandomAccessFile index = new RandomAccessFile(indexFile, "r");
         long startPos = Long.parseLong(pos[0]);
-        long endPos = 0;
-        String word = pos[2];
-        if (pos[1] != null){
+        long endPos;
+        if (pos[1] != null)
             endPos = Long.parseLong(pos[1]);
+        else 
+            endPos = index.length();
+
+        String word = pos[2];
+
+        index.seek(startPos);
+        String taBira = index.readLine();
+        String taMat = taBira.split(",")[0];
+        if(taMat.equals(word)){
+            index.close();
+            return taBira;
         }else{
-            index.seek(startPos);
-            String taBira = index.readLine();
-            String taMat = taBira.split(",")[0];
+            taBira = index.readLine();
+            taMat = taBira.split(",")[0];
             if(taMat.equals(word)){
                 index.close();
                 return taBira;
-            }else{
-                taBira = index.readLine();
-                taMat = taBira.split(",")[0];
-                if(taMat.equals(word)){
-                    index.close();
-                    return taBira;
-                }
-            }
         }
+    }
     
         
         while(startPos < endPos){
@@ -104,23 +109,18 @@ public class konkordans {
             //mid > key
             else if(currentWord.compareTo(word) < 0){
                 startPos = mid + 1;
-                System.out.println("mid +1");
             }
             //mid < key
             else if(currentWord.compareTo(word) > 0){
                 endPos = mid - 1;
-                System.out.println("mid -1");
             }
             if(startPos + startLine.getBytes().length > endPos){
-                System.out.println("mid");
                 break;
-                
             }
 
         }
         index.close();
-       
-        return "";
+    return "";
     }
 
     public static void readTokenized(String line) throws IOException{
@@ -132,34 +132,37 @@ public class konkordans {
         String[] input = line.split(",");
         int amount = Integer.parseInt(input[1]);
         long posTokenizer = Long.parseLong(input[2]);
-        
+        StringBuilder str;
         token.seek(posTokenizer);
-        for(int i = 0; i < Math.min(25, amount); i++){
-            String[] tokenLine = token.readLine().split(" ");
-            int posKorpus = Integer.parseInt(tokenLine[1]);
-            korpus.seek(posKorpus);
-            byte[] b = new byte[1000 + tokenLine[0].getBytes().length + 1];
-            korpus.read(b, 0, 30);
-            System.out.println(new String(b, "ISO-8859-1"));
-        }
-        System.out.println("Det fanns " + amount + " förekomster av ordet i korpuset");
+        System.out.println("DET FINNS " + amount + " FÖREKOMSTER I KORPUS.");
+        int printedCount = amount <= 25 ? amount : 25;
+
+        printWords (0, printedCount, token, korpus);
+
         if (amount > 25){
             Scanner sc = new Scanner(System.in);  // Create a Scanner object
-            System.out.println("Finns fler än 25 förekomster? Vill du verkligen se alla? J/N");
+            System.out.println("ORDET FÖREKOMMER FLER ÄN 25 GÅNGER. VILL DU SE ALLA? J/N");
             String svar = sc.nextLine();
             if(svar.equals("J")){
-                for(int i = 25; i < amount; i++){
-                    String[] tokenLine = token.readLine().split(" ");
-                    int posKorpus = Integer.parseInt(tokenLine[1]);
-                    korpus.seek(posKorpus);
-                    byte[] b = new byte[1000 + tokenLine[0].getBytes().length + 1];
-                    korpus.read(b, 0, 30);
-                    System.out.println(new String(b, "ISO-8859-1"));
-                }
+                printWords (printedCount, amount, token, korpus);
             }           
-        }
-           
+        }  
         token.close();
         korpus.close();
     }
+
+    private static void printWords(int start, int end, RandomAccessFile token, RandomAccessFile korpus) throws IOException {
+        for(int i = start; i < end; i++){
+            String[] tokenLine = token.readLine().split(" ");
+            int posKorpus = Integer.parseInt(tokenLine[1]);
+            int korpusStart = posKorpus - 30 < 0 ? 0 : posKorpus - 30;
+            int korpusEnd = posKorpus + 30 > korpus.length() ? ((int) korpus.length()): posKorpus + 30; 
+            korpus.seek(korpusStart);
+            byte[] b = new byte[1000 + tokenLine[0].getBytes().length + 1];
+            korpus.read(b, 0, korpusEnd - korpusStart);
+            String result = new String(b, "ISO-8859-1").replace("\n", " ");
+            System.out.println(result);
+        }
+    }
 }
+

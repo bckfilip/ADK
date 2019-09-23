@@ -21,7 +21,6 @@ public class index{
             int positionFirst = 0;
             int positionNext = firstLine.getBytes("ISO-8859-1").length +2;
 
-
             while(nextLine != null){
                 String currentWord = currentLine[0];
                 String[] newLineWords = nextLine.split(" ");
@@ -37,9 +36,8 @@ public class index{
                 currentLine = newLineWords;
                 nextLine = reader.readLine();
             }
-            occurences++;
             String currentWord = currentLine[0];
-            writer.write(currentWord + "," + occurences + "," + positionFirst + "\n");
+            writer.write(currentWord + "," + occurences + "," + positionFirst);
 
             reader.close();
             writer.close();
@@ -59,29 +57,38 @@ public class index{
     public static void createHash() throws IOException{
 
         List<Integer> hashList = new ArrayList<Integer>();
-        for(int i = 0; i < 30*30*30+1; i++){
+        for(int i = 0; i < 30*30*30; i++){
             hashList.add(0);
         }
 
-        File indexFile = new File("/var/tmp/index.txt");
-        File hashFile = new File("/var/tmp/hash.txt");
-        RandomAccessFile index = new RandomAccessFile(indexFile, "r");
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(hashFile), "ISO-8859-1"));
+        RandomAccessFile index = new RandomAccessFile(new File("/var/tmp/index.txt"), "r");
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("/var/tmp/hash.txt")), "ISO-8859-1"));
+
+        String currentWord;
+
+        int lastHash = 0;
+        int currentHash = 0;
+
         int pos = 0;
         String currentLine;
-
         while((currentLine = index.readLine()) != null){
-            String currentWord = currentLine.split(",")[0];
-            int hashCurrent = getHash(currentWord);
-
-            if(hashList.get(hashCurrent) == 0){
-                hashList.set(hashCurrent, pos);
+            lastHash = currentHash;
+            currentWord = currentLine.split(",")[0];
+            currentHash = getHash (currentWord);
+            if (lastHash == currentHash && currentHash != 0) {
+                pos = Math.toIntExact(index.getFilePointer());
+                continue;
+            }
+            
+            if(hashList.get(currentHash) == 0){
+                hashList.set(currentHash, pos);
                 pos = Math.toIntExact(index.getFilePointer());
             }
         }
         for(int i:hashList){
             writer.write(i + "\n");
         }
+        
         writer.close();
         index.close();
     }
