@@ -1,2 +1,2 @@
-Filip Bäck & Ludwig Emilsson
-Repo för ADK laborationer.
+Vid användning av programkod hänvisar vi till [KTHs hederskodex](https://www.kth.se/eecs/utbildning/hederskodex).
+Kopiering av text (eller programkod) från andras lösningar är inte tillåten även om texten (eller programkoden) skrivs om så att ytstrukturen är olika men innehållet är detsamma. I vissa kurser används ett program som beräknar likheten mellan olika lösningar till samma uppgift. Påkommen plagiering anmäls till rektor och kan bli fall för disciplinnämnden.
