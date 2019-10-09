@@ -2,9 +2,10 @@ import java.util.*;
 public class del2{
 
   Kattio io;
-	int x, y, e;
-	ArrayList<Edge> listLista = new ArrayList<>();
-	ArrayList<ArrayList<Integer>> grannlista = new ArrayList<>();
+	int x;
+	int y; 
+	int e;
+	ArrayList<Edge> grannLista = new ArrayList<>();
 
 private class Edge {
   int a;
@@ -12,7 +13,10 @@ private class Edge {
   public Edge (int a, int b) {
     this.a = a;
     this.b = b;
-  }
+	}
+	@Override public String toString() {
+		return a + " " + b;
+	}
 }
 
 
@@ -35,7 +39,13 @@ void readMaxFlowSolution() {
 			lista = new ArrayList<>();
 
 			if(a != s && a != t && b != s && b != t){
-        listLista.add(new Edge(a, b));
+        grannLista.add(new Edge(a, b));
+			}
+			if(a == s || b == s){
+				x++;
+			}
+			if(a == t || b == t){
+				y++;
 			}
 		}
   }
@@ -43,10 +53,9 @@ void readMaxFlowSolution() {
 	void writeBipMatchSolution(){
 		// Skriv ut antal hörn och storleken på matchningen
 		io.println(x + " " + y);
-		io.println(listLista.size());
-		for(int i = 0; i < listLista.size(); i++){
-			Edge kant = listLista.get(i);
-			io.println(kant.a + " " + kant.b);
+		io.println(grannLista.size());
+		for(int i = 0; i < grannLista.size(); i++){
+			io.println(grannLista.get(i));
 		}
 		io.flush();
   }

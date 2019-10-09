@@ -30,8 +30,8 @@ public class BipRed {
 
 	void readBipartiteGraph() {
 	// Läs antal hörn och kanter
-		x = io.getInt();
-		y = io.getInt();
+		int x = io.getInt();
+		int y = io.getInt();
 		e = io.getInt();
 
 		// Läs in kanterna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
@@ -48,6 +48,7 @@ public class BipRed {
 		for(int i = x+1; i <= x+y; i++){
       grannLista.add(new Edge(i, x+y+2));
 		}
+		
 	}
     
 	void writeFlowGraph() {
@@ -61,7 +62,7 @@ public class BipRed {
 		io.println(s + " " + t);
 		io.println(e);
 		for (int i = 0; i < grannLista.size(); i++) {
-			io.println(grannLista.get(i).toString() + " " + 1);
+			io.println(grannLista.get(i) + " " + 1);
 		}
 		io.flush();
   }
@@ -75,7 +76,6 @@ public class BipRed {
 		int t = io.getInt();
 		int totflow = io.getInt();
 		int e = io.getInt();
-		ArrayList<Integer> lista;
 
 		for (int i = 0; i < e; i++) {
 			// Flöde f från a till b
@@ -87,6 +87,7 @@ public class BipRed {
         grannLista.add(new Edge(a, b));
 			}
 		}
+		
   }
     
 	void writeBipMatchSolution(){
@@ -94,7 +95,7 @@ public class BipRed {
 		io.println(x + " " + y);
 		io.println(grannLista.size());
 		for(int i = 0; i < grannLista.size(); i++){
-			io.println(grannLista.get(i).toString());
+			io.println(grannLista.get(i));
 		}
 		io.flush();
   }
