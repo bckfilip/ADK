@@ -30,8 +30,8 @@ public class BipRed {
 
 	void readBipartiteGraph() {
 	// Läs antal hörn och kanter
-		int x = io.getInt();
-		int y = io.getInt();
+		x = io.getInt();
+		y = io.getInt();
 		e = io.getInt();
 
 		// Läs in kanterna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
@@ -106,6 +106,7 @@ public class BipRed {
 		readBipartiteGraph();
 
 		writeFlowGraph();
+		grannLista.clear();
 
 		readMaxFlowSolution();
 
