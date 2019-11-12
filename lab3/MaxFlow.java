@@ -1,48 +1,61 @@
+
 import java.util.*;
 
 public class MaxFlow {
-  Kattio io;
 
-  // grannlistan(a,b)
-
-  private class Edge {
+  public class Edge {
     int granne;
     int capacity;
     int flow;
-
+  
     public Edge(int granne, int capacity) {
       this.granne = granne;
       this.capacity = capacity;
       this.flow = 0;
     }
+  
+    public int restCapacity() {
+      return capacity - flow;
+    }
   }
 
-  void fordFulkersson() {
-        io = new Kattio(System.in, System.out);
-        // läser input
-        int v = io.getInt();
-        io.println(v);
-        // System.out.println(v);
-        int s = io.getInt();
-        int t = io.getInt();
-        int e = io.getInt();
-        // hashmap
-        ArrayList<ArrayList<Edge>> grannLista = new ArrayList<ArrayList<Edge>>(v);
-        for (int i = 0; i < e; i++) {
-          int a = io.getInt();
-          int b = io.getInt();
-          int capacity = io.getInt();
-          if (grannLista.get(a) == null) {
-            grannLista.set(a, new ArrayList<>());
-            ArrayList<Edge> temp = grannLista.get(a);
-            temp.add(new Edge(b, capacity));
-          } else {
-            grannLista.get(a).add(new Edge(b, capacity));
-          }
-    
-        }
-    
+  // grannlistan(a,b)
+  
 
+  public static void main(String[] args) {
+    MaxFlow mf = new MaxFlow();
+    Kattio io;
+    io = new Kattio(System.in, System.out);
+  
+    
+    // läser input
+    int v = io.getInt();
+    int s = io.getInt();
+    int t = io.getInt();
+    int e = io.getInt();
+    // hashmap
+    ArrayList<ArrayList<Edge>> grannLista = new ArrayList<ArrayList<Edge>>(v);
+    for (int i = 0; i < e; i++) {
+      int a = io.getInt();
+      int b = io.getInt();
+      int capacity = io.getInt();
+      if (grannLista.get(a) == null) {
+        // a -> b
+        grannLista.set(a, new ArrayList<>());
+        ArrayList<Edge> tempA = grannLista.get(a);
+        tempA.add(mf.new Edge(b, capacity));
+      }
+      // b -> a
+      if (grannLista.get(b) == null) {
+        grannLista.set(a, new ArrayList<>());
+        ArrayList<Edge> tempB = grannLista.get(b);
+        tempB.add(mf.new Edge(a, capacity));
+      } else {
+        // a <--> b
+        grannLista.get(a).add(mf.new Edge(b, capacity));
+        grannLista.get(b).add(mf.new Edge(a, capacity));
+      }
+    }
     // här börjar fordfulkersson
     // skapar residualgraf
     ArrayList<ArrayList<Edge>> residualGraf = new ArrayList<ArrayList<Edge>>(grannLista);
@@ -55,11 +68,18 @@ public class MaxFlow {
         residualGraf.get(i).get(j).capacity = grannLista.get(i).get(j).capacity;
       }
     }
-
-    while (bfs(residualGraf, s, t, parentList, v)) {
-      int path_flow = 9999999;
+    while (mf.bfs(residualGraf, s, t, parentList, v)) {
+      int pathFlow = Integer.MAX_VALUE;
+      for (int node = t; node != s; node = parentList.get(node)) {
+        int u = parentList.get(node);
+        pathFlow = Math.min(pathFlow, residualGraf.get(u).get(node).capacity);
+      }
+      for (int node = t; node != s; node = parentList.get(node)) {
+        int u = parentList.get(node);
+        residualGraf.get(u).get(node).flow = residualGraf.get(u).get(node).capacity - pathFlow;
+        residualGraf.get(node).get(u).flow = residualGraf.get(node).get(u).capacity + pathFlow;
+      }
     }
-
   }
 
   // residualgraf,Edge s, Edge t, parentList<Edges>
@@ -71,7 +91,6 @@ public class MaxFlow {
     queue.add(source);
     visited.set(source, true);
     parentList.set(source, -1);
-
     while (queue.size() != 0) {
       int pop = queue.poll();
       for (int i = 0; i <= v; i++) {
@@ -82,22 +101,7 @@ public class MaxFlow {
         }
       }
     }
-
     // Om vi når sink från källa return true, else false
-    return (visited.set(sink, true));
-
-    // int visited[v];
-    // memset(visited,0,sizeof(visited));
-    // visited list
-    // queue Edges
-
+    return (visited.get(sink));
   }
-
-  public static void main(String[] args) {
-    MaxFlow mf = new MaxFlow();
-
-
-    
-  }
-
 }
