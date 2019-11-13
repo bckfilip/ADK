@@ -1,0 +1,59 @@
+1. Jämför tidskomplexiteten för Edmonds-Karps algoritm då grafen implementeras med grannmatris och då den implementeras med grannlistor.
+
+Då algoritmen implementeras med n*n grannmatris kommer värsta fallet vara att man går igenom alla noder med BFS, för att sedan gå igenom alla kanter, vilket resulterar i O(n²) tidskomplexitet. 
+Med listan har vi egentligen två fall; då grafen är gles samt tät. När grafen är tät, kommer det finnas väldigt mycket kanter än hörn vilket kommer leda till en väldigt krävande iteration med BFS genom alla kanter. Detta resulterar i O(m). När grafen är gles, kommer det finnas fler noder än kanter, vilket leder till en krävande iteration över alla noder. Detta resulterar då i O(n). Den resulterande tidskomplexiteten kan då skrivas som O(n+m) där antingen n eller m är dominant beroende på om grafen är gles eller tät.
+ 
+Alltså bör man välja implementationen med grannlista oavsett fall, då det kommer resultera i bättre komplexitet. 
+
+[V³e] eller [ve²]
+
+Antal iterationer, alltså att hitta en utökande stig, kommer ske v*e gånger pga för varje utökande vägmaximerar flödet i åtmånstone 1 kant, i värsta fallet kommer man då besöka alla noder n.
+
+Antalet iterationer, alltså antalet gånger vi hittar en utökande stig, kommer i värsta fall ske V gånger då vi kan behöva gå igenom samtliga noder. Sedan kan vi behöva gå igenom alla kanter då i värsta fall endast en kant mättas per iteration. Sökningen sker då i [V*E]. 
+För grannmatrisen, som är N² kommer detta då bli:
+(N*N)(V*E) = (N*N)(N*M) = N³M
+För grannlistan, som är [N+M]:
+(N+M)(V*E) = N²M + NM²
+Då grafen är gles kommer V~=E -> V+E=2V=V=E
+Då grafen är tät kommer V<E -> V+E = E
+komplexiteten blir alltså: [VE²]
+
+2. Varför har stigarna som BFS hittar i restflödesgrafen inte nödvändigtvis längd 3? Hur långa kan de bli? 
+
+i) S -> X < - - > Y -> t
+
+Minsta stigen kommer vara av längd 3, då den går från source -> X -> Y -> t. 
+Detta betyder dock inte att alla stiger kommer vara av denna längd. Då grafen är bipartit kan vi från X endast gå till Y, och från Y endast gå till X eller sink(t). Stigarna kommer därför bli av udda längd med minst längd 3. 
+
+ii) I restflödesgrafen kommer vi sätta bakåt-pilar, dessa kommer senare användas för att hitta en alternativ stig för att maximera flödet. Detta resulterar i att vi kan få stigar med längd:
+[min(x,y) * 2 + 1] (source och sink räknas ej)
+
+3.
+i) Då det endast utförs addition-och subtraktionsoperationer på en heltalsmängd vet vi att mängden är sluten och att det endast kommer genereras heltal som resultat.
+
+ii) *Jag antar att när kantkapaciteten ändras till två att vi ej kommer ha några ettor i flödesproblemet ö.v.h, då detta skulle innebär att två kanter med kapaciteter 1 skulle kunna gå till samma nod med utflöde 2 och detta i sin tur skulle innebära problem för matchningen.
+
+Då kantkapaciteterna sätts till två istället för ett kommer resultatet av flödesalgoritmen skalas upp med faktor 2, dvs utflödet kommer bli dubbelt så stort. Detta torde innebära att vi inte längre kan översättas som en trivial lösning till ett matchningsproblem.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

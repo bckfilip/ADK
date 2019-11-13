@@ -42,30 +42,37 @@ public class MaxFlow {
       int capacity = io.getInt();
       // a -> b
       if (!(grannMap.containsKey(a))) {
-        System.out.println("first if");
         ArrayList<Edge> value = new ArrayList<Edge>();
         grannMap.put(a, value);
         residualGraf.put(a, value);
         Edge tmpEdge = mf.new Edge(b, capacity);
         grannMap.get(a).add(tmpEdge);
         residualGraf.get(a).add(tmpEdge);
+        if(!(grannMap.containsKey(b))){
+          ArrayList<Edge> val = new ArrayList<Edge>();
+          grannMap.put(a, val);
+          residualGraf.put(a, val);
+          Edge tmp = mf.new Edge(b, capacity);
+          grannMap.get(a).add(tmp);
+          residualGraf.get(a).add(tmp);
+        }else{
+          Edge tEdge = mf.new Edge(b, capacity);
+          grannMap.get(a).add(tEdge);
+          residualGraf.get(a).add(tEdge);
+          tmpEdge = mf.new Edge(a, capacity);
+          grannMap.get(b).add(tmpEdge);
+          residualGraf.get(b).add(tmpEdge);
+        }
       } // b -> a
-      if (!(grannMap.containsKey(b))) {
-        System.out.println("second if");
-        ArrayList<Edge> value = new ArrayList<Edge>();
-        grannMap.put(b, value);
-        residualGraf.put(b, value);
-        Edge tmpEdge = mf.new Edge(a, capacity);
-        grannMap.get(b).add(tmpEdge);
-        residualGraf.get(b).add(tmpEdge);
-      } else {
+      else {
         System.out.println("else");
         Edge tmpEdge = mf.new Edge(b, capacity);
         grannMap.get(a).add(tmpEdge);
         residualGraf.get(a).add(tmpEdge);
         tmpEdge = mf.new Edge(a, capacity);
-        grannMap.get(b).add(tmpEdge);
+        grannMap.get(b).add(tmpEdge); // nullpointer om b inte finns
         residualGraf.get(b).add(tmpEdge);
+        // check for B
       }
     }
     // här börjar fordfulkersson
