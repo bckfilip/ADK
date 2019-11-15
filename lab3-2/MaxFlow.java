@@ -30,13 +30,13 @@ public class MaxFlow {
     MaxFlow mf = new MaxFlow();
     Kattio io;
     io = new Kattio(System.in, System.out);
-    //se om ge fixed size till map.
+    // se om ge fixed size till map.
     HashMap<Integer, ArrayList<Edge>> grannMap = new HashMap<Integer, ArrayList<Edge>>();
     HashMap<Integer, ArrayList<Edge>> residualGraf = new HashMap<Integer, ArrayList<Edge>>();
     System.out.println("before input");
     /*
-      skapar två identiska grafer som inehpller kanter och bakåtkanter.    
-    */
+     * skapar två identiska grafer som inehpller kanter och bakåtkanter.
+     */
     int v = io.getInt();
     int s = io.getInt();
     int t = io.getInt();
@@ -81,56 +81,52 @@ public class MaxFlow {
           residualGraf.get(to).add(backward);
         }
       }
-
     }
-
     // här börjar fordfulkersson
-    ArrayList<Integer> parentList = new ArrayList<Integer>(Collections.nCopies(v + 1, Integer.MAX_VALUE));
+    ArrayList<Edge> parents = new ArrayList<Edge>();
     int maxFlow = 0;
-    System.out.println("calling bfs");
-    while (mf.bfs(residualGraf, s, t, parentList, v)) {
-      System.out.println("rad 73");
+    while (mf.bfs(residualGraf, s, t, parents, v)) {
       int pathFlow = Integer.MAX_VALUE;
-      for (int node = t; node != s; node = parentList.get(node)) {
-        System.out.println("rad 76");
-        int u = parentList.get(node);
-        pathFlow = Math.min(pathFlow, residualGraf.get(u).get(node).capacity);
+      for(Edge edge : parents){
+        if(edge.flow > 0){
+          pathFlow = Math.min(pathFlow, edge.capacity - edge.flow);
+        }
+        else{
+          continue;
+        }
       }
-      for (int node = t; node != s; node = parentList.get(node)) {
-        System.out.println("rad 81");
-        int u = parentList.get(node);
-        residualGraf.get(u).get(node).flow = residualGraf.get(u).get(node).capacity - pathFlow;
-        residualGraf.get(node).get(u).flow = residualGraf.get(node).get(u).capacity + pathFlow;
+      for(Edge edge : parents){
+        edge.flow += pathFlow;
+        edge.flow -= pathFlow;
       }
+      maxFlow += pathFlow;
     }
     io.close();
   }
 
   // residualgraf,Edge s, Edge t, parentList<Edges>
-  boolean bfs(HashMap<Integer, ArrayList<Edge>> residualGraf, int source, int sink, ArrayList<Integer> parentList,
-      int v) {
-    System.out.println("in bfs");
-    ArrayList<Boolean> visited = new ArrayList<Boolean>(Collections.nCopies(v + 1, Boolean.FALSE));
+  boolean bfs(HashMap<Integer, ArrayList<Edge>> residualGraf, int source, int sink, ArrayList<Edge> parents, int v) {
+    boolean[] visited = new boolean[v];
+    Arrays.fill(visited, false);
     LinkedList<Integer> queue = new LinkedList<Integer>();
 
     queue.add(source);
-    visited.set(source, true);
-    parentList.set(source, -1);
-    while (queue.size() != 0) {
-      System.out.println("in while");
-      int pop = queue.poll();
-      for (int i = 0; i <= v; i++) {
-        if (visited.get(i) == false) {
-          if (residualGraf.get(pop).get(i).capacity > 0) {
-            queue.add(i);
-            parentList.set(i, pop);
-            visited.set(i, true);
-          }
-        }
+    visited[source] = true;
+    parents.add(null);
 
+    while (queue.size() != 0) {
+      int currentNode = queue.poll();
+      if (currentNode == sink) {
+        return false;
+      }
+      for (Edge edge : residualGraf.get(currentNode)) {
+        if (visited[edge.to] = false) {
+          visited[edge.to] = true;
+          parents.add(edge);
+          queue.add(edge.to);
+        }
       }
     }
-    // Om vi når sink från källa return true, else false
-    return (visited.get(sink));
+    return true;
   }
 }
