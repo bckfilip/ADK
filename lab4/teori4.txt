@@ -1,0 +1,115 @@
+﻿Filip Bäck
+950326
+filbac@kth.se
+ADK Labb 4 teori
+1) Skriv en lösning till ja-instansen av rollbesättningsproblemet.
+roller:
+r1:   p1 p3 p4
+r2:   p2 p3
+r3:   p1 p3
+r4:   p2
+r5:   p1 p2 p3 p4
+r6:   p1 p4
+scener:
+s1:   r1 r2 r6
+s2:   r2 r3 r5
+s3:   r2 r4 r6
+s4:   r2 r3 r6
+s5:   r1 r6
+Gör en fungerande uppsättning av denna pjäs:
+s1:   r1(p1) r2(p3) r6(p4)
+s2:   r2(p3) r3(p1) r5(p4)
+s3:   r2(p3) r4(p2) r6(p4)
+s4:   r2(p3) r3(p1) r6(p4)
+s5:   r1(p1) r6(p4)
+
+
+så: p1 är r1, r3
+p2 är r4
+p3 är r2
+p4 är r5, r6
+
+
+2) Visa att rollbesättningsproblemet ligger i NP.
+Rollbesättningsproblemet kan formuleras som en graf där varje hörn utgör en roll och kanter går mellan alla hörn som är med i samma scen.
+Om man sedan går igenom alla hörn och verifierar att dess tilldelade skådespelare är med i personuppsättningen. Gå sedan igenom alla kanter och verifiera att alla grannar har olika skådespelare. Kolla att p1 och p2 inte är grannar.
+Dessa operationer bör ta linjär tid mot antalet kanter och hörn. Saken är klar.
+
+
+3) Förändra nej-instansen i exemplet till en ja-instans.
+roller:
+r1:   p1 p2 p3
+r2:   p1 p2
+r3:   p1 p3
+r4:   p2
+r5:   p1 p2 p3
+
+
+
+
+scener:
+s1:   r1 r2
+s2:   r1 r2
+s3:   r1 r3 r4
+s4:   r3 r5
+s5:   r2 r3 r5
+
+
+Vi ser direkt att de 3 skådespelarna inte kan fördelas på 5 roller utan att p1 och p2
+behöver göra en scen tillsammans. 
+s3 innehåller r1, r3, r4. 
+r4 måste vara p2.
+r1 kan vara p1, p2, p3. 
+r3 kan vara p1, p3.
+Eftersom p2 är i scenen måste r3 vara p3, vilket är omöjligt eftersom r1 inte kan vara
+p1, p2 eller p3.
+Genom att lägga till skådespelare till r1, r3, r4, en åt gånger märker vi att det kommer
+behöver 2 skådespelare till.
+Det kan alltså se ut som:
+5
+5
+5
+3 1 2 3
+2 2 3 5
+2 1 3 4
+1 2
+3 1 2 3
+2 1 2
+2 1 2
+3 1 3 4
+2 3 5
+3 2 3 5
+
+
+4) Vilken är den minsta möjliga produktion som uppfyller indatakraven fär rollbesättningsproblemet och som går att sätta upp? 
+Både p1 och p2 måste vara med och ha varsin scen. Det får dessutom inte finnas några monologer. Vi får alltså 2 scener.
+3
+2
+3
+1 1
+1 2
+1 3
+2 1 3
+2 2 3
+
+
+5) Tänk dig en instans där rollerna är indelade i två grupper, där rollerna aldrig före-
+kommer i samma scener som roller ur samma grupp. Hur många skådespelare behövs då?
+Sätt divorna, p1 och p2, i samma grupp och p3 i den andra gruppen. Med denna uppsättning
+fungerar exemplet ovan.
+
+
+6) Anta att film A innehåller en scen med rollerna 4,7 och 12, medan film B har tre scener
+med rollerna 4 & 7, 7 & 12, 4 & 12. Om alla övriga villkor är identiska mellan filmerna - 
+kommer svaren då att bli likadana?
+Film A:
+s1: 4 7 12
+
+
+Film B:
+s1: 4 7
+s2: 7 12
+s3: 4 12
+
+
+Om man ritar upp dessa som en graf bör man få samma svar.
