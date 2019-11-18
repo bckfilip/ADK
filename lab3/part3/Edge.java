@@ -18,6 +18,15 @@ public class Edge {
         this.direction = dir;
     }
 
+    Edge(int from, int to){
+        this.from = from;
+        this.to = to;
+        this.capacity = 1;
+        this.flow = -1;
+        this.resCap = -1;
+        this.direction = false;
+    }
+
     void setReverseEdge(Edge reverseEdge) {
         this.reverseEdge = reverseEdge;
     }
@@ -32,4 +41,8 @@ public class Edge {
     public Edge getReverseEdge() {
         return reverseEdge;
     }
+
+    @Override public String toString() {
+        return from + " " + to;
+      }
 }

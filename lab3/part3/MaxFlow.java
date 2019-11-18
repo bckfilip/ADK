@@ -2,31 +2,25 @@ import java.util.*;
 import java.io.*;
 
 public class MaxFlow {
-    private static Kattio io;
-    private static int s;
-    private static int t;
-    private static int v;
-    private static HashMap<Integer, ArrayList<Edge>> grannlista;
 
     /**
      * Create a flowgraph with input from matchproblem.
      */
 
-    private static void createFlowgraph(){
+    HashMap<Integer, ArrayList<Edge>> createFlowgraph(ArrayList<Edge> list, int v){
+       HashMap<Integer, ArrayList<Edge>> grannlista;
         //System.setIn(new FileInputStream("test1.txt"));
         //fyll hashmap med listor
-        v = io.getInt();
+        //v = io.getInt();
         grannlista = new HashMap<>(v + 1);
         for (int i = 0; i < v + 1; i++) {
             grannlista.put(i, new ArrayList<Edge>());
         }
-        s = io.getInt();
-        t = io.getInt();
-        int e = io.getInt();
-        for (int i = 0; i < e; i++) {
-            int from = io.getInt();
-            int to = io.getInt();
-            int capacity = io.getInt();
+        
+        for (Edge e:list) {
+            int from = e.from;
+            int to = e.to;
+            int capacity = e.capacity;
 
             //Skapa kant åt båda håll, sätt referens till varandra
             Edge forward = new Edge(from, to, capacity, 0, true);
@@ -44,9 +38,10 @@ public class MaxFlow {
             grannlista.put(to, edgesTo);
 
         }
+        return grannlista;
     }
 
-    private static int edmondsKarp() {
+    int edmondsKarp(HashMap<Integer, ArrayList<Edge>> grannlista,int s,int t) {
         ArrayList<Edge> parents;
         int maxFlow = 0;
         do {
@@ -81,29 +76,23 @@ public class MaxFlow {
         return maxFlow;
     }
 
-    public static void main(String [] args){
-        io = new Kattio(System.in, System.out);
-        createFlowgraph();
-        int maxflow = edmondsKarp();
-        io.println(v);
-        io.println(s + " " + t + " " + maxflow);
+    ArrayList<Edge> solution(int v, int s, int t, int e, HashMap<Integer, ArrayList<Edge>> grannlista ){
+        //io = new Kattio(System.in, System.out);
+        //createFlowgraph(list,v);
+        //int maxflow = edmondsKarp();
         ArrayList<Edge> posFlowEdges = new ArrayList<>();
+
         for(int i = 0; i <= grannlista.size(); i++){
             if(!grannlista.containsKey(i)){
                 continue;
             }
-            for(Edge e: grannlista.get(i)){
-                if(e.flow > 0 && e.direction == true){
-                    posFlowEdges.add(e);
+            for(Edge edge: grannlista.get(i)){
+                if(edge.flow > 0 && edge.direction == true){
+                    posFlowEdges.add(edge);
                 }
             }
         }
+        return posFlowEdges;
 
-        io.println(posFlowEdges.size());
-        for(Edge e: posFlowEdges){
-            io.println(e.from + " " + e.to + " " + e.flow);
-        }
-        
-    io.close();
     }
 }

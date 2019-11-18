@@ -11,35 +11,23 @@ import java.util.*;
 
 public class BipRed {
 	Kattio io;
-	int x, y, e;
+	int x, y, e, v, s, t, maxFlow;
 	ArrayList<Edge> grannLista = new ArrayList<>();
 	
-	private class Edge {
-    int a;
-    int b;
-    public Edge (int a, int b) {
-      this.a = a;
-      this.b = b;
-    }
-
-    @Override public String toString() {
-      return a + " " + b;
-    }
-  }
 	
 //x hörn
 //y hörn
 	void readBipartiteGraph() {
-	// Läs antal hörn och kanter
+	// Läs antal hörn och Edgeer
 		x = io.getInt();
 		y = io.getInt();
 		e = io.getInt();
 
-		// Läs in kanterna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
+		// Läs in Edgeerna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
 		for(int i = 0; i < e; i++){
-			int a = io.getInt();
-			int b = io.getInt();
-			grannLista.add(new Edge(a, b));
+			int from = io.getInt();
+			int to = io.getInt();
+			grannLista.add(new Edge(from, to));
 		}
 		//s
 		for(int i = 1; i <= x; i++){
@@ -53,12 +41,13 @@ public class BipRed {
 	}
     
 	void writeFlowGraph() {
-		int v = x + y + 2;
+		v = x + y + 2;
 		e = e + x + y;
-		int s = x + y + 1;
-		int t = x + y + 2;
+		s = x + y + 1;
+		t = x + y + 2;
 		
-		// Skriv ut antal hörn och kanter samt källa och sänka
+		/* 
+		// Skriv ut antal hörn och Edgeer samt källa och sänka
 		io.println(v);
 		io.println(s + " " + t);
 		io.println(e);
@@ -66,10 +55,11 @@ public class BipRed {
 			io.println(grannLista.get(i) + " " + 1);
 		}
 		io.flush();
+		*/
   }
     
-	void readMaxFlowSolution() {
-		// Läs in antal hörn, kanter, källa, sänka, och totalt flöde
+	void readMaxFlowSolution(ArrayList<Edge> posFlowEdges) {
+		// Läs in antal hörn, Edgeer, källa, sänka, och totalt flöde
 		// (Antal hörn, källa och sänka borde vara samma som i grafen vi
 		// skickade iväg)
 		int v = io.getInt();
@@ -91,12 +81,12 @@ public class BipRed {
 		
   }
     
-	void writeBipMatchSolution(){
+	void writeBipMatchSolution(ArrayList<Edge> posFlowEdges){
 		// Skriv ut antal hörn och storleken på matchningen
 		io.println(x + " " + y);
-		io.println(grannLista.size());
-		for(int i = 0; i < grannLista.size(); i++){
-			io.println(grannLista.get(i));
+		io.println(posFlowEdges.size());
+		for(Edge e : posFlowEdges){
+			io.println(e.toString());
 		}
 		io.flush();
   }
@@ -107,13 +97,16 @@ public class BipRed {
 		readBipartiteGraph();
 
 		writeFlowGraph();
-		grannLista.clear();
-		//MaxFlow maxflow = new MaxFlow();
-		//
 
-		readMaxFlowSolution();
+		MaxFlow mf = new MaxFlow();
+		HashMap<Integer, ArrayList<Edge>> flowGraph = mf.createFlowgraph(grannLista,v);
+		int maxFlow = mf.edmondsKarp(flowGraph,s,t);
+		ArrayList<Edge> posFlowEdges = mf.solution(v,s,t,e,flowGraph);
+		
 
-		writeBipMatchSolution();
+		//readMaxFlowSolution();
+
+		writeBipMatchSolution(posFlowEdges);
 
 		io.close();
   }
