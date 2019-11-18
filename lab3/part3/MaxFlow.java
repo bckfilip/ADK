@@ -4,14 +4,10 @@ import java.io.*;
 public class MaxFlow {
 
     /**
-     * Create a flowgraph with input from matchproblem.
+     * Skapar en en Map utifrån input i readBipartiteGraph.
      */
-
     HashMap<Integer, ArrayList<Edge>> createFlowgraph(ArrayList<Edge> list, int v){
        HashMap<Integer, ArrayList<Edge>> grannlista;
-        //System.setIn(new FileInputStream("test1.txt"));
-        //fyll hashmap med listor
-        //v = io.getInt();
         grannlista = new HashMap<>(v + 1);
         for (int i = 0; i < v + 1; i++) {
             grannlista.put(i, new ArrayList<Edge>());
@@ -41,7 +37,7 @@ public class MaxFlow {
         return grannlista;
     }
 
-    int edmondsKarp(HashMap<Integer, ArrayList<Edge>> grannlista,int s,int t) {
+    void edmondsKarp(HashMap<Integer, ArrayList<Edge>> grannlista,int s,int t) {
         ArrayList<Edge> parents;
         int maxFlow = 0;
         do {
@@ -60,11 +56,12 @@ public class MaxFlow {
                     }
                 }
             }
+            //här har vi nu en stig. Dags att öka flow i alla kanter med minFlow
             if(parents.get(t) != null){
                 int pathflow = Integer.MAX_VALUE;
                 //Initialization, termination, incrementation
                 for(Edge edge = parents.get(t); edge != null; edge = parents.get(edge.from)){
-                    pathflow = Math.min(pathflow, edge.capacity - edge.flow);
+                    pathflow = Math.min(pathflow, edge.capacity - edge.flow); //öka med minsta rest cap
                 }
                 for(Edge edge = parents.get(t); edge != null; edge = parents.get(edge.from)){
                     edge.updateFlow(pathflow);
@@ -73,13 +70,9 @@ public class MaxFlow {
             }
         }
         while(parents.get(t) != null);
-        return maxFlow;
     }
-
+    //Skapar en lista av kanterna som löser matchningsproblemet
     ArrayList<Edge> solution(int v, int s, int t, int e, HashMap<Integer, ArrayList<Edge>> grannlista ){
-        //io = new Kattio(System.in, System.out);
-        //createFlowgraph(list,v);
-        //int maxflow = edmondsKarp();
         ArrayList<Edge> posFlowEdges = new ArrayList<>();
 
         for(int i = 0; i <= grannlista.size(); i++){
@@ -87,7 +80,8 @@ public class MaxFlow {
                 continue;
             }
             for(Edge edge: grannlista.get(i)){
-                if(edge.flow > 0 && edge.direction == true){
+                //tar med alla kanter som har flow, och som inte är kopplat till s eller t
+                if(edge.flow > 0 && edge.direction == true && edge.from != s && edge.to != t){
                     posFlowEdges.add(edge);
                 }
             }

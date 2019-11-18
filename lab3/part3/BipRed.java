@@ -12,9 +12,13 @@ import java.util.*;
 public class BipRed {
 	Kattio io;
 	int x, y, e, v, s, t, maxFlow;
-	ArrayList<Edge> grannLista = new ArrayList<>();
+	ArrayList<Edge> grannLista = new ArrayList<Edge>();
 	
-	
+	/**
+	 * x,y hörn
+	 * läser in noder och skapar en Edge mellan dessa 
+	 * 
+	 */
 //x hörn
 //y hörn
 	void readBipartiteGraph() {
@@ -23,7 +27,7 @@ public class BipRed {
 		y = io.getInt();
 		e = io.getInt();
 
-		// Läs in Edgeerna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
+		//Läs in Edgeerna i grannlista. X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. 
 		for(int i = 0; i < e; i++){
 			int from = io.getInt();
 			int to = io.getInt();
@@ -46,43 +50,13 @@ public class BipRed {
 		s = x + y + 1;
 		t = x + y + 2;
 		
-		/* 
-		// Skriv ut antal hörn och Edgeer samt källa och sänka
-		io.println(v);
-		io.println(s + " " + t);
-		io.println(e);
-		for (int i = 0; i < grannLista.size(); i++) {
-			io.println(grannLista.get(i) + " " + 1);
-		}
-		io.flush();
-		*/
-  }
-    
-	void readMaxFlowSolution(ArrayList<Edge> posFlowEdges) {
-		// Läs in antal hörn, Edgeer, källa, sänka, och totalt flöde
-		// (Antal hörn, källa och sänka borde vara samma som i grafen vi
-		// skickade iväg)
-		int v = io.getInt();
-		int s = io.getInt();
-		int t = io.getInt();
-		int totflow = io.getInt();
-		int e = io.getInt();
-
-		for (int i = 0; i < e; i++) {
-			// Flöde f från a till b
-			int a = io.getInt();
-			int b = io.getInt();
-			int f = io.getInt();
-
-			if(a != s && a != t && b != s && b != t){
-        grannLista.add(new Edge(a, b));
-			}
-		}
 		
   }
-    
+	 
+	
+	//Skriver ut lösningen på matchningsproblemet
+	//output ger alla kanter som bildar matchningen
 	void writeBipMatchSolution(ArrayList<Edge> posFlowEdges){
-		// Skriv ut antal hörn och storleken på matchningen
 		io.println(x + " " + y);
 		io.println(posFlowEdges.size());
 		for(Edge e : posFlowEdges){
@@ -99,13 +73,10 @@ public class BipRed {
 		writeFlowGraph();
 
 		MaxFlow mf = new MaxFlow();
+		//skapar en flowgraph
 		HashMap<Integer, ArrayList<Edge>> flowGraph = mf.createFlowgraph(grannLista,v);
-		int maxFlow = mf.edmondsKarp(flowGraph,s,t);
+		mf.edmondsKarp(flowGraph,s,t);
 		ArrayList<Edge> posFlowEdges = mf.solution(v,s,t,e,flowGraph);
-		
-
-		//readMaxFlowSolution();
-
 		writeBipMatchSolution(posFlowEdges);
 
 		io.close();
