@@ -1,0 +1,19 @@
+1. Vad skiljer en heuristik från en approximationsalgoritm?
+
+En heuristik är ett tillvägagångssätt att närma sig en lösning, men som saknar garanti för varken en optimal eller korrekt lösning.
+En approximationsalgoritm är i princip en heuristik sammankopplat med ett bevis. Detta bevis handlar bara om worst-case-scenario som visar tidskvalitén på algortimen beroende på input. Denna kvalité är formulerad som en kvot optimal/t där t är den approximativa faktorn som minskar ju bättre algoritmen är.
+
+2. Rollbesättningsproblemet i labb5 är ett minimeringsproblem. Vad är målfunktionen för problemet?
+
+
+3. I labb 5 har s.k superskådisar införts i rollbesättningsproblemet. Varför behövde superskådisar införas i labb5?
+
+4. Om lokalsökning ska användas som heuristik för rollbesättningsproblemet behös en metod för lokal modifiering av en lösning. Föreslå en lokal modifiering för rollbesättningsproblemet.
+
+5. Vid lokalsökning gör man lokala modifieringar som inte försämrar målfunktionens värde upprepade gånger. Bevisa attt detta tillvägagångssätt(med din lokala modifiering från upg4) inte alltid leder till att den optimala lösningen hittas.
+
+6. Varför fungerar inte ditt bevis i upg5 om 'Simulated annealing' används istället för upprepad lokal förbättring?
+
+7. När bör man sluta göra upprepade lokala modifieringar vid lokalsökning? Dvs, hur länga ska man hålla på?
+
+8. Vad finns det för fördelar med att införa slump i en heuristik? 
