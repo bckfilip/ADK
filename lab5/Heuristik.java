@@ -71,4 +71,7 @@ public class Heuristik{
 
   io.close();
   }
+  public static void main(String args[]){
+    cast();
+  }
 }
