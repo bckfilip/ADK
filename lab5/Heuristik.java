@@ -70,85 +70,84 @@ public class Heuristik {
 		 * återanvända Annars placera ut ny annars superskådis
 		 */
 		setDivas();
-		for (int i = 1; i <= v; i++) {
-			//Kolla om vi kan återanvända
-			for(int j = 1; j <= setActorRoles.size(); j++){
-				if(canPlayRole(j, i)){
-					ArrayList<Integer> role = setActorRoles.get(j);
-					role.add(i);
-					roleIsSet[i] = true;
+		for (int roll = 1; roll <= v; roll++) {
+
+			// Kolla om vi kan återanvända. actor=1 pga key
+			for (int actor = 1; actor <= setActorRoles.size(); actor++) {
+				if (canPlayRole(actor, roll)) {
+					ArrayList<Integer> role = setActorRoles.get(actor);
+					role.add(roll);
+					roleIsSet[roll] = true;
 					break;
 				}
 			}
-			//Kolla bland icke-tilldelade skådespelare
-			int size = roleActors.get(i).size();	
-			for(int k = 1; k <= size; k++){
-				if(canPlayRole(k, i)){
-					ArrayList<Integer> role = setActorRoles.get(k);
-					role.add(i);
-					roleIsSet[i] = true;
+			// Kolla bland icke-tilldelade skådespelare. actor=0 pga value
+			ArrayList<Integer> actors = roleActors.get(roll);
+			for (int actor = 0; actor < actors.size(); actor++) {
+				int skådis = actors.get(actor);
+				if (canPlayRole(skådis, roll)) {
+					ArrayList<Integer> role = setActorRoles.get(skådis);
+					role.add(roll);
+					roleIsSet[roll] = true;
 					break;
 				}
 			}
 			ss++;
 			setActorRoles.put(ss, new ArrayList<Integer>());
-			ArrayList<Integer> role = setActorRoles.get(ss);
-			role.add(i);
-			roleIsSet[i] = true;
+			ArrayList<Integer> roles = setActorRoles.get(ss);
+			roles.add(roll);
+			roleIsSet[roll] = true;
 		}
-
-		io.close();
+	io.close();
 	}
-	//diva1 -> diva2          diva2 -> diva1
+
 	static void setDivas() {
 		int divaOneRole = 0;
-		boolean diva2set = false;
-
 		// Sätt roll för diva1
-		for (int i : actorRoles.get(1)) {
-			if (canPlayRole(1, i)) {
-				divaOneRole = i;
-				ArrayList<Integer> roles = setActorRoles.get(1);
-				roles.add(i);
-				roleIsSet[i] = true;
-				break;
+		ArrayList<Integer> possibleRoles1 = actorRoles.get(1);
+		for (int role1 : possibleRoles1) {
+			divaOneRole = role1;
+			ArrayList<Integer> roles = setActorRoles.get(1);
+			roles.add(role1);
+			roleIsSet[role1] = true;
+			// Sätt roll för diva2
+			ArrayList<Integer> possibleRoles2 = actorRoles.get(2);
+			for (int role2 : possibleRoles2) {
+				if (canPlayRole(2, role2)) {
+					ArrayList<Integer> roll = setActorRoles.get(2);
+					roll.add(role2);
+					roleIsSet[role2] = true;
+					return;
+				}
 			}
-		}
-		// Sätt roll för diva2
-		for (int i : actorRoles.get(2)) {
-			if (canPlayRole(2, i)) {
-				ArrayList<Integer> roles = setActorRoles.get(2);
-				roles.add(i);
-				roleIsSet[i] = true;
-				diva2set = true;
-				break;
-			}
-		}
-		/*
-		if (!diva2set) {
 			setActorRoles.remove(1);
+			setActorRoles.put(1, new ArrayList<Integer>());
 			roleIsSet[divaOneRole] = false;
-			setDivas();
-		}		
-		*/
+			divaOneRole = 0;
+		}
 	}
 
 	static boolean canPlayRole(int actor, int role) {
-		if (roleIsSet[role] == true)
+		if (roleIsSet[role])
 			return false;
 
-		for (int scene = 1; scene <= v; scene++) {
-			//Specialfall för divor. Om diva redan har roll i denna scen + check om andra divan spelar i samma scen
+		for (int scene = 1; scene <= e; scene++) {
+			// Specialfall för divor. Om diva redan har roll i denna scen + check om andra
+			// divan spelar i samma scen
 			if (actor == 1 || actor == 2) {
 				int otherDiva = (actor == 1) ? 2 : 1;
-				for (int roleOtherDiva : setActorRoles.get(otherDiva)) {
-					if (sceneRoles.get(scene).contains(roleOtherDiva) && sceneRoles.get(scene).contains(role));
-					return false;
+				ArrayList<Integer> roles = setActorRoles.get(otherDiva);
+				for (int roll : roles) {
+					ArrayList<Integer> scen = sceneRoles.get(scene);
+					if (scen.contains(roll) && scen.contains(role));
+						return false;
 				}
 			}
-			//Om actor redan har roll i denna scen
-			for (int roles : setActorRoles.get(actor)) {
-				if (sceneRoles.get(scene).contains(roles) && sceneRoles.get(scene).contains(role))
+			// Om actor redan har roll i denna scen
+			ArrayList<Integer> roles = setActorRoles.get(actor);
+			for (int roll : roles) {
+				ArrayList<Integer> scen = sceneRoles.get(scene);
+				if (scen.contains(roll) && scen.contains(role))
 					return false;
 			}
 		}
