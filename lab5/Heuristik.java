@@ -6,6 +6,7 @@ public class Heuristik {
 	 * Input: V - roller E - scener M - Skådespelare Villkor typ 1 - Möjliga
 	 * skådespelare för roll Villkor typ 2 - Roller i scen
 	 */
+	static Kattio io;
 	static int v, e, m, ss;
 	static HashMap<Integer, ArrayList<Integer>> actorRoles;
 	static HashMap<Integer, ArrayList<Integer>> roleScenes;
@@ -17,7 +18,6 @@ public class Heuristik {
 	static boolean[] roleIsSet;
 
 	static void cast() {
-		Kattio io;
 		io = new Kattio(System.in, System.out);
 		v = io.getInt(); // roller
 		e = io.getInt(); // scener
@@ -70,6 +70,8 @@ public class Heuristik {
 		 * återanvända Annars placera ut ny annars superskådis
 		 */
 		setDivas();
+		boolean found = false;
+		boolean found2 = false;
 		for (int roll = 1; roll <= v; roll++) {
 
 			// Kolla om vi kan återanvända. actor=1 pga key
@@ -78,27 +80,40 @@ public class Heuristik {
 					ArrayList<Integer> role = setActorRoles.get(actor);
 					role.add(roll);
 					roleIsSet[roll] = true;
+					found = true;
 					break;
 				}
+				
 			}
+			
 			// Kolla bland icke-tilldelade skådespelare. actor=0 pga value
-			ArrayList<Integer> actors = roleActors.get(roll);
-			for (int actor = 0; actor < actors.size(); actor++) {
+			if(!found){
+				ArrayList<Integer> actors = roleActors.get(roll);
+				for (int actor = 0; actor < actors.size(); actor++) {
 				int skådis = actors.get(actor);
 				if (canPlayRole(skådis, roll)) {
 					ArrayList<Integer> role = setActorRoles.get(skådis);
 					role.add(roll);
 					roleIsSet[roll] = true;
+					found2 = true;
 					break;
 				}
+				
 			}
-			ss++;
-			setActorRoles.put(ss, new ArrayList<Integer>());
-			ArrayList<Integer> roles = setActorRoles.get(ss);
-			roles.add(roll);
-			roleIsSet[roll] = true;
+
+			}
+
+			if(!found && !found2){
+				ss++;
+				setActorRoles.put(ss, new ArrayList<Integer>());
+				ArrayList<Integer> roles = setActorRoles.get(ss);
+				roles.add(roll);
+				roleIsSet[roll] = true;
+			}
 		}
-	io.close();
+	
+
+	
 	}
 
 	static void setDivas() {
@@ -139,23 +154,48 @@ public class Heuristik {
 				ArrayList<Integer> roles = setActorRoles.get(otherDiva);
 				for (int roll : roles) {
 					ArrayList<Integer> scen = sceneRoles.get(scene);
-					if (scen.contains(roll) && scen.contains(role));
+					if (scen.contains(roll) && scen.contains(role)){
 						return false;
+					}
 				}
 			}
 			// Om actor redan har roll i denna scen
 			ArrayList<Integer> roles = setActorRoles.get(actor);
 			for (int roll : roles) {
 				ArrayList<Integer> scen = sceneRoles.get(scene);
-				if (scen.contains(roll) && scen.contains(role))
+				if (scen.contains(roll) && scen.contains(role)){
 					return false;
+				}
 			}
 		}
 		return true;
 	}
 
 	public static void main(String args[]) {
+
+		
 		cast();
-		System.out.println("hallå");
+		StringBuilder str = new StringBuilder();
+		int setActors = 0;
+		int size = setActorRoles.size();
+		for(int i = 1; i <= size; i++){
+			ArrayList<Integer> roles = setActorRoles.get(i);
+			if(roles.size() == 0){
+				continue;
+			}else{
+				setActors++;
+				str.append(i + " " + roles.size() + " ");
+				for(int role : roles){
+					str.append(role + " ");
+				}
+				str.append("\n");
+			}
+		}
+		System.out.println(setActors);
+		System.out.println(str.toString());
+
+		//io.println(setActors);
+		//io.println(str.toString());
+		
 	}
 }
