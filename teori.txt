@@ -1,0 +1,16 @@
+Problemet Q KAN reduceras till Q' om varje instans x av Q kan omvandlas till en instans x' av Q' så att x€Q om och endast om x'€Q'.
+Den här typen av reduktion kallas för KARPREDUKTION.
+
+Om reduktionen tar polynomisk tid skriver vi:
+Q <=p Q'
+eftersom Q inte kvar vara svårare att lösa än Q'.
+Viktiga konsekvenser av detta:
+-Om Q <=p Q' och Q'€P så Q€P
+-om Q <=p Q' och Q!€P så Q!€P.
+
+NP-fullständiga problem:
+Problemet Q är NP-fullständing om
+1. Q € NP
+2. Q är NP-svårt: Q' <=p Q för alla Q' € NP.
+Att ett problem är NP-fullständing betyder i praktiken att det inte finns någon effektiv algoritm för det: nästan alla tror att P != NP. 
+
